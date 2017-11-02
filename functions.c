@@ -191,7 +191,9 @@ void removeFromTree(node *parent, node *n){
 void findLevelOrder(node* *array[100], node *root, node *parent, int row, int column, int remaining, int prevDepth){
  
   fprintf(stderr, "start of levelOrder\n\n");
+  displayNode(root->childRight);
   if(strcmp(root->productName, parent->productName) == 0){
+  fprintf(stderr, "Entered array creation\n\n");
     int i;
     for(i = 0; i < 100; i++){
       if(i == 0){
@@ -199,7 +201,9 @@ void findLevelOrder(node* *array[100], node *root, node *parent, int row, int co
       }
       array[i] = malloc(2 * i * sizeof(node*));
     }
-  }
+  }//NOTE THIS ARRAY CAUSING ALL MY PRObLEMS
+
+
 //  displayNode(root);
 //  displayNode(root->childRight);
 //  displayNode(parent);
