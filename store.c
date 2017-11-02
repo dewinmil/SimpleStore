@@ -4,7 +4,7 @@
 #include "functions.h"
 
 int main(){
-  node root;
+  node *root = malloc(sizeof(node));
 
 
   node* *array[100];
@@ -17,10 +17,10 @@ int main(){
     array[i] = malloc(2 * i * sizeof(node*));
   }
 
-  setRoot(&root);
-  loadData(&root);
+  setRoot(root);
+  loadData(root);
 
-  findLevelOrder(array, &root, &root, 0, 0, 0, 0);
+  findLevelOrder(array, root, root, 0, 0, 0, 0);
 /*
   for(i = 0; i < 100; i++){
     free(array[i]);

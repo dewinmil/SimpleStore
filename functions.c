@@ -61,11 +61,12 @@ void displayNode(node *n){
 
 void addToTree(node *root, node *parent, node *n){
 
+  fprintf(stderr, "Add to Tree\n");
   //global variable root is empty / not created so set == to node n
   if(strlen(root->productName) == 0){
-    fprintf(stderr, "made root\n");
+    fprintf(stderr, "Make root\n");
+
     strcpy(root->productName, n->productName);
-    fprintf(stderr, "made root\n");
     root->stock = n->stock;
     strcpy(root->unit, n->unit);
     root->price = n->price;
@@ -74,7 +75,9 @@ void addToTree(node *root, node *parent, node *n){
   else{ 
     //have a root / compare n to see if belongs to left of potential parent
     if(strcmp(n->productName, parent->productName) < 0){
+      fprintf(stderr, "Enter left side\n");
       if(!parent->childLeft){
+        fprintf(stderr, "Make left child\n");
         //parent has no left child - set to node n
         if(parent->parent == nptr){
           n->parent = root;
@@ -90,19 +93,26 @@ void addToTree(node *root, node *parent, node *n){
       }
     }
     else if(strcmp(n->productName, parent->productName) > 0){
+      fprintf(stderr, "Enter right side\n");
       if(!parent->childRight){
+        fprintf(stderr, "Make Right child\n");
+        /*
         if(parent->parent == nptr){//parent == root
-          fprintf(stderr, "set root addresses\n");
           n->parent = root;
           root->childRight = n;
           displayNode(root);
           displayNode(root->childRight);
         }
-        else{
+        else{*/
           n->parent = parent;
           parent->childRight = n;
-        }
+          displayNode(n);
+          fprintf(stderr, "Pointer: %p\n", n);
+        //}
       }else{
+        fprintf(stderr, "parent->childRight, n\n");
+        fprintf(stderr, "Pointer: %p\n", n);
+        displayNode(n);
         addToTree(root, parent->childRight, n);
       }
     }
@@ -122,9 +132,14 @@ void loadData(node *root){
   char *token;
   token = strtok(buffer," \n");
   int index = -1;
-  node *n;
+  node *n = malloc(sizeof(node));
+  fprintf(stderr, "Pointer: %p\n", n);
   while(token != NULL){
     index = (index+1) % 5;
+	    if(index == 0){
+      node *n = malloc(sizeof(node));
+       fprintf(stderr, "Stays constant? Pointer: %p\n", n);
+    }
     switch (index){
       case 0:
         strcpy(n->productName, token);
@@ -140,9 +155,8 @@ void loadData(node *root){
         break;
       case 4:
         strcpy(n->pricePerUnit, token);
-        displayNode(n);
+        fprintf(stderr, "Non-relevent? Pointer: %p\n", n);
         addToTree(root, root, n);
-        //fprintf(stderr, "name: %s\nstock: %.2f\nunit: %s\nprice: %.2f\npricePerUnit: %s\n", n.productName, n.stock,n.unit, n.price, n.pricePerUnit);
         break;
     }
     token = strtok(NULL," \n");
