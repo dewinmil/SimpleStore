@@ -1,0 +1,2 @@
+Apples 20 single 1 dollars-per-apple
+Oranges 15 single 1.25 dollars-per-orange
