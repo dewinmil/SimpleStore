@@ -38,7 +38,7 @@ void removeFromTree(node *n);
 void displayNode(node *node);
 
 
-void findLevelOrder(node* *array[100],node *root, node *parent, int row, int column, int remaining, int prevDepth);
+int findLevelOrder(node* *array[100],node *root, node *parent, int row, int column, int remaining, int prevDepth);
 
 
 #endif
