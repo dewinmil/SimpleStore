@@ -61,10 +61,8 @@ void displayNode(node *n){
 
 void addToTree(node *root, node *parent, node *n){
 
-  fprintf(stderr, "Add to Tree\n");
   //global variable root is empty / not created so set == to node n
   if(strlen(root->productName) == 0){
-    fprintf(stderr, "Make root\n");
 
     strcpy(root->productName, n->productName);
     root->stock = n->stock;
@@ -75,44 +73,19 @@ void addToTree(node *root, node *parent, node *n){
   else{ 
     //have a root / compare n to see if belongs to left of potential parent
     if(strcmp(n->productName, parent->productName) < 0){
-      fprintf(stderr, "Enter left side\n");
       if(!parent->childLeft){
-        fprintf(stderr, "Make left child\n");
-        //parent has no left child - set to node n
-        if(parent->parent == nptr){
-          n->parent = root;
-          root->childLeft = n;
-        }
-        else{
-          n->parent = parent;
-          parent->childLeft = n;
-        }
+        n->parent = parent;
+        parent->childLeft = n;
       }else{
         //node did have left child / run again with left child as potential parent
         addToTree(root, parent->childLeft, n);
       }
     }
     else if(strcmp(n->productName, parent->productName) > 0){
-      fprintf(stderr, "Enter right side\n");
       if(!parent->childRight){
-        fprintf(stderr, "Make Right child\n");
-        /*
-        if(parent->parent == nptr){//parent == root
-          n->parent = root;
-          root->childRight = n;
-          displayNode(root);
-          displayNode(root->childRight);
-        }
-        else{*/
-          n->parent = parent;
-          parent->childRight = n;
-          displayNode(n);
-          fprintf(stderr, "Pointer: %p\n", n);
-        //}
+        n->parent = parent;
+        parent->childRight = n;
       }else{
-        fprintf(stderr, "parent->childRight, n\n");
-        fprintf(stderr, "Pointer: %p\n", n);
-        displayNode(n);
         addToTree(root, parent->childRight, n);
       }
     }
@@ -133,12 +106,10 @@ void loadData(node *root){
   token = strtok(buffer," \n");
   int index = -1;
   node *n = malloc(sizeof(node));
-  fprintf(stderr, "Pointer: %p\n", n);
   while(token != NULL){
     index = (index+1) % 5;
-	    if(index == 0){
-      node *n = malloc(sizeof(node));
-       fprintf(stderr, "Stays constant? Pointer: %p\n", n);
+    if(index == 0){
+      n = malloc(sizeof(node));
     }
     switch (index){
       case 0:
@@ -155,7 +126,6 @@ void loadData(node *root){
         break;
       case 4:
         strcpy(n->pricePerUnit, token);
-        fprintf(stderr, "Non-relevent? Pointer: %p\n", n);
         addToTree(root, root, n);
         break;
     }
@@ -204,29 +174,22 @@ void removeFromTree(node *parent, node *n){
 
 int findLevelOrder(node* *array[100], node *root, node *parent, int row, int column, int remaining, int prevDepth){
  
-  fprintf(stderr, "start of levelOrder\n\n");
 
   displayNode(parent);
-  fprintf(stderr, "past array\n\n");
   if(parent->childLeft){
-    fprintf(stderr, "left children\n\n");
     array[column][row] = parent->childLeft;
     row++;
   }
   if(parent->childRight){
-    fprintf(stderr, "right children\n\n");
     array[column][row] = parent->childRight;
     row++;
   }
-  fprintf(stderr, "past children\n\n");
   remaining--;
   if(remaining > 0){
-    fprintf(stderr, "recursive call\n\n");
     findLevelOrder(array, root, array[column-1][prevDepth-remaining], row, column, remaining, prevDepth);
   }
   else{
     if(row == 0){
-      fprintf(stderr, "we are done\n\n");
       return 1;
     }
     else{
@@ -234,7 +197,6 @@ int findLevelOrder(node* *array[100], node *root, node *parent, int row, int col
       prevDepth = row;
       remaining = row;
       row = 0;
-      fprintf(stderr, "next column\n\n");
       findLevelOrder(array, root, array[column-1][prevDepth-remaining], row, column, remaining, prevDepth);
     }
   }

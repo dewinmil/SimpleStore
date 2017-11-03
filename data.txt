@@ -1,3 +1,3 @@
-Apples 20 single 1 dollars-per-apple
-Oranges 15 single 1.25 dollars-per-orange
 bananna 30 bundles 2.25 dollars-per-pound
+Oranges 15 single 1.25 dollars-per-orange
+Apples 20 single 1 dollars-per-apple
