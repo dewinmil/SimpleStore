@@ -22,15 +22,16 @@ void *nptr = NULL;
 
 
 void displayMenu(){
-  char mainMenu[450];
-  strcpy(mainMenu, "Welcome to the Miles DeWind grocery store\n");
+  char mainMenu[550];
+  strcpy(mainMenu, "Welcome to Miles grocery store\n");
   strcat(mainMenu, "Please let me know what you want to do according to the menu below\n");
   strcat(mainMenu, "==================================================================\n");
   strcat(mainMenu, "1: Add product to store             2: Purchase product from store\n");
   strcat(mainMenu, "3: Check price of a product         4: Show products in store\n");
   strcat(mainMenu, "5: Remove a product from store      6: Find product\n");
-  strcat(mainMenu, "7: Inventory\n");
-  strcat(mainMenu, "You can type a selection number, or exit to leave the store\n\n");
+  strcat(mainMenu, "7: Inventory                        8: Done for day\n");
+  strcat(mainMenu, "Please type a selection number, or type exit to leave the store\n\n");
+  strcat(mainMenu, "You can also type menu to redisplay this menu when line says input\n");
   fprintf(stderr, "%s", mainMenu);
 }
 
@@ -143,7 +144,6 @@ void loadData(node *root){
         break;
       case 4:
         strcpy(n->pricePerUnit, token);
-        displayNode(n);
         addToTree(root, root, n);
         break;
     }
@@ -157,37 +157,64 @@ void saveData(node root){
 }
 
 
-void removeFromTree(node *parent, node *n){
-  
-  //removing root / clear all pointers & values
-  if(parent->parent == nptr){
-    cleanNode(parent);
-    free(parent);
+float removeFromTree(node *root, node *parent, node *n){
+   
+  //product on left branch of node
+  if(strcmp(n->productName, parent->productName) < 0){
+    if(parent->childLeft){
+      removeFromTree(root, parent->childLeft, n);
+    }
+    else{
+      return -1; //couldn't find product
+    }
   }
-  else{ 
-    //have a root / compare n to see if belongs to left of potential parent
-    if(strcmp(n->productName, parent->productName) < 0){
+  //product on right branch of node
+  else if(strcmp(n->productName, parent->productName) > 0){
+    if(parent->childRight){
+      removeFromTree(root, parent->childRight, n);
+    }
+    else{
+      return -1; //couldn't find product
+    }
+  }
+  else{//must be on correct product
+    if(parent->parent == nptr){//must be root
       if(parent->childLeft){
-        removeFromTree(parent->childLeft, n);
-      }
-    }
-    else if(strcmp(n->productName, parent->productName) > 0){
-      if(parent->childRight){
-        removeFromTree(parent->childRight, n);
-      }
-    }
-    else{//must be equal
-      if(n->childLeft){
-        n->childLeft->parent = n->parent;
+        parent->childLeft->parent = nptr;
         if(parent->childRight){
-          n->childRight->parent = n->childLeft;
-          n->childLeft->childRight = n->childRight;
+          parent->childRight->parent = nptr;
+          addToTree(parent->childLeft,  parent->childLeft, parent->childRight);
         }
-      }else if(n->childRight){
-        n->childRight->parent = parent->parent;
       }
+      else if(parent->childRight){
+        parent->childRight->parent = nptr;
+      }
+      cleanNode(parent);
+      free(parent);
+      return 1;
+    }
+    else{
+      if(parent->parent->childLeft == parent){
+        parent->parent->childLeft == nptr;
+      }
+      else if(parent->parent->childRight == parent){
+        parent->parent->childRight == nptr;
+
+      }
+      if(parent->childLeft){
+        parent->childLeft->parent = nptr;
+        addToTree(root, root, parent->childLeft);
+      }
+      if(parent->childRight){
+        parent->childRight->parent = nptr;
+        addToTree(root, root, parent->childRight);
+      }
+      cleanNode(parent);
+      free(parent);  
+      return 1;
     }
   }
+
 }
 
 
@@ -261,18 +288,41 @@ float makePurchase(node *root, node *parent, node *n, float num){
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+node* findProduct(node *root, node *parent, node *n){
+  //root is empty / not created so can't make purchase
+  if(strlen(root->productName) == 0){
+    return n;
+  }
+  else{ 
+    //product on left branch of node
+    if(strcmp(n->productName, parent->productName) < 0){
+      if(parent->childLeft){
+        findProduct(root, parent->childLeft, n);
+      }
+      else{
+        return n; //couldn't find product
+      }
+    }
+    //product on right branch of node
+    else if(strcmp(n->productName, parent->productName) > 0){
+      if(parent->childRight){
+        findProduct(root, parent->childRight, n);
+      }
+      else{
+        return n; //couldn't find product
+      }
+    }
+    else{//must be on correct product
+      if(parent->price > 0){
+        return parent;
+      }
+      else{
+        return n;
+      }
+    }
+  }
+  
+}
 
 
 
