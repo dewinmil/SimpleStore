@@ -1,32 +1,27 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include "functions.h"
 
 int main(){
   node *root = malloc(sizeof(node));
 
 
-  node* *array[100];
+  node* *array[15];
 
   int i;
-  for(i = 0; i < 100; i++){
+  for(i = 0; i < 15; i++){
     if(i == 0){
       array[i] = malloc(1 * sizeof(node*));
     }
-    array[i] = malloc(2 * i * sizeof(node*));
+    array[i] = malloc(pow(2,i) * sizeof(node*));
   }
 
   cleanNode(root);
   loadData(root);
   displayMenu();
 
-  //findLevelOrder(array, root, root, 0, 0, 1, 0);
-/*
-  for(i = 0; i < 100; i++){
-    free(array[i]);
-  }
-*/
   float basket = 0;
   while(1){
     float num = -1;
@@ -175,7 +170,11 @@ int main(){
       else if(num == 8){
         fprintf(stderr, "Thank you for shopping at Miles grocery store!\n");
 
+        findLevelOrder(array, root, root, 0, 0, 1, 0);
         
+        fprintf(stderr, "The days total sales: %.2f\n", basket);
+        
+        saveState(array); 
         break;
       }
     }

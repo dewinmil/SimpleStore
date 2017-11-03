@@ -5,6 +5,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <math.h>
 
 typedef struct node{
   char productName[20];
@@ -117,6 +118,7 @@ void loadData(node *root){
   fd = open("data.txt", O_RDONLY | S_IRUSR);
   char buffer[size]; 
   pread(fd, buffer, size, 0);
+  close(fd);
   //receive parse buffer by line and space
   char *token;
   token = strtok(buffer," \n");
@@ -180,7 +182,6 @@ float removeFromTree(node *root, node *parent, node *n){
   else{//must be on correct product
     if(parent->parent == nptr){//must be root
       if(parent->childLeft){
-        displayNode(parent->childLeft);
         strcpy(parent->productName, parent->childLeft->productName);
         parent->stock = parent->childLeft->stock;
         strcpy(parent->unit, parent->childLeft->unit);
@@ -236,33 +237,55 @@ float removeFromTree(node *root, node *parent, node *n){
 }
 
 
-void findLevelOrder(node* *array[100], node *root, node *parent, int row, int column, int remaining, int prevDepth){
+void findLevelOrder(node* *array[15], node *root, node *parent, int row, int column, int remaining, int prevDepth){
  
   //free & malloc array
   if(row == 0 && column == 0){
-    int i;
-    for(i = 0; i < 100; i++){
+   
+    int i, index;
+    for(i = 0; i < 15; i++){
+      for(index = 0; index < pow(2,i); index ++){
+        array[i][index] = nptr;
+      }
+    }
+  /*int i;
+    for(i = 0; i < 25; i++){
       free(array[i]);
     }
    
-    for(i = 0; i < 100; i++){
+    for(i = 0; i < 25; i++){
       if(i == 0){
         array[i] = malloc(1 * sizeof(node*));
       }
-      array[i] = malloc(2 * i * sizeof(node*));
-    }
+      array[i] = malloc(pow(2,i) * sizeof(node*));
+    }*/
 
+  }
+  if(strcmp(parent->productName, root->productName)==0){
+    array[column][row] = parent;
+    column++;
+    if(parent->childLeft){
+      prevDepth++;
+    }
+    if(parent->childRight){
+      prevDepth++;
+    }
   } 
 
   displayNode(parent);
   if(parent->childLeft){
+        fprintf(stderr, "Expect i: %d    index: %d\n", column, row);
+        fprintf(stderr, "Expect name: %s\n", parent->childLeft->productName);
     array[column][row] = parent->childLeft;
     row++;
   }
   if(parent->childRight){
+        fprintf(stderr, "Expect i: %d    index: %d\n", column, row);
+        fprintf(stderr, "Expect name: %s\n", parent->childRight->productName);
     array[column][row] = parent->childRight;
     row++;
   }
+  
   remaining--;
   if(remaining > 0){
     findLevelOrder(array, root, array[column-1][prevDepth-remaining], row, column, remaining, prevDepth);
@@ -358,4 +381,33 @@ node* findProduct(node *root, node *parent, node *n){
 }
 
 
+void saveState(node* *array[15]){
+  char buffer[10000];
+  char tmp[20];
+  int i, index;
+  for(i = 0; i < 15; i++){
+    for(index = 0; index < pow(2,i); index++){
+      if(array[i][index]){
+        strcat(buffer, array[i][index]->productName);
+        strcat(buffer, " ");
 
+        sprintf(tmp, "%.2f", array[i][index]->stock);
+        strcat(buffer, tmp);
+        strcat(buffer, " ");
+
+        strcat(buffer, array[i][index]->unit);
+        strcat(buffer, " ");
+
+        sprintf(tmp, "%.2f", array[i][index]->price);
+        strcat(buffer, tmp);
+        strcat(buffer, " ");
+        
+        strcat(buffer, array[i][index]->pricePerUnit);
+        strcat(buffer, "\n");
+      } 
+    }
+  }
+  int fd = open("data.txt", O_CREAT | O_RDWR, S_IRWXU);
+  pwrite(fd, buffer, strlen(buffer), 0);
+  close(fd);
+}

@@ -1,3 +1,5 @@
-bananna 30 bundles 2.25 dollars-per-pound
-Oranges 15 single 1.25 dollars-per-orange
-Apples 20 single 1 dollars-per-apple
+Oranges 15.00 single 1.25 dollars-per-orange
+Apples 20.00 single 1.00 dollars-per-apple
+cat 2.00 pet 20.00 dollars-per-cat
+bananna 20.00 bundle 1.25 dollars-per-lb
+monseter 1.00 evil 10000.00 dollars-per-monster

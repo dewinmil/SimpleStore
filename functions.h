@@ -41,7 +41,7 @@ float removeFromTree(node *root, node *parent, node *n);
 void displayNode(node *node);
 
 
-void findLevelOrder(node* *array[100],node *root, node *parent, int row, int column, int remaining, int prevDepth);
+void findLevelOrder(node* *array[15],node *root, node *parent, int row, int column, int remaining, int prevDepth);
 
 
 float makePurchase(node *root, node *parent, node *n, int num);
@@ -51,6 +51,9 @@ node* priceCheck(node *root, node *parent, node *n);
 
 
 node* findProduct(node *root, node *parent, node *n);
+
+
+void saveState(node* *array[100]);
 
 
 #endif
