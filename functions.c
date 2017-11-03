@@ -195,10 +195,12 @@ float removeFromTree(node *root, node *parent, node *n){
     }
     else{
       if(parent->parent->childLeft == parent){
-        parent->parent->childLeft == nptr;
+      fprintf(stderr, "hope it is this one left\n");  
+        parent->parent->childLeft = nptr;
       }
-      else if(parent->parent->childRight == parent){
-        parent->parent->childRight == nptr;
+      if(parent->parent->childRight == parent){
+      fprintf(stderr, "hope it is this one right\n");  
+        parent->parent->childRight = nptr;
 
       }
       if(parent->childLeft){
@@ -210,7 +212,8 @@ float removeFromTree(node *root, node *parent, node *n){
         addToTree(root, root, parent->childRight);
       }
       cleanNode(parent);
-      free(parent);  
+      free(parent);
+      fprintf(stderr, "hope it is this one");  
       return 1;
     }
   }
