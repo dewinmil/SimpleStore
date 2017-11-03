@@ -20,19 +20,34 @@ typedef struct node{
 void *nptr = NULL;
 //node root;
 
-void setRoot(node *root){
+
+void displayMenu(){
+  char mainMenu[450];
+  strcpy(mainMenu, "Welcome to the Miles DeWind grocery store\n");
+  strcat(mainMenu, "Please let me know what you want to do according to the menu below\n");
+  strcat(mainMenu, "==================================================================\n");
+  strcat(mainMenu, "1: Add product to store             2: Purchase product from store\n");
+  strcat(mainMenu, "3: Check price of a product         4: Show products in store\n");
+  strcat(mainMenu, "5: Remove a product from store      6: Find product\n");
+  strcat(mainMenu, "7: Inventory\n");
+  strcat(mainMenu, "You can type a selection number, or exit to leave the store\n\n");
+  fprintf(stderr, "%s", mainMenu);
+}
+
+
+void cleanNode(node *n){
   int i;
   for(i = 0; i < 20; i++){
     
-  root->productName[i] = '\0';
-  root->unit[i] = '\0';
-  root->pricePerUnit[i] = '\0';;
+  n->productName[i] = '\0';
+  n->unit[i] = '\0';
+  n->pricePerUnit[i] = '\0';;
   }
-  root->stock = 0;
-  root->price = 0;
-  root->childLeft = nptr;
-  root->childRight = nptr;
-  root->parent = nptr;
+  n->stock = 0;
+  n->price = 0;
+  n->childLeft = nptr;
+  n->childRight = nptr;
+  n->parent = nptr;
 }
 
 int findFileSize(char* string){
@@ -143,7 +158,8 @@ void removeFromTree(node *parent, node *n){
   
   //removing root / clear all pointers & values
   if(parent->parent == nptr){
-    setRoot(parent);
+    cleanNode(parent);
+    free(parent);
   }
   else{ 
     //have a root / compare n to see if belongs to left of potential parent
@@ -200,6 +216,10 @@ int findLevelOrder(node* *array[100], node *root, node *parent, int row, int col
       findLevelOrder(array, root, array[column-1][prevDepth-remaining], row, column, remaining, prevDepth);
     }
   }
+
+//float makePurchase(node *root, node *n, int num){
+
+//}
   
 }
 

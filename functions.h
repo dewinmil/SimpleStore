@@ -17,13 +17,16 @@ typedef struct node{
 node root;
 
 
-void setRoot(node *root);
+void displayMenu();
+
+
+void cleanNode(node *n);
 
 
 int findFileSize(char* string);
 
 
-void addToTree(node *root, node *n);
+void addToTree(node *root, node *parent, node *n);
 
 
 char* loadData();
