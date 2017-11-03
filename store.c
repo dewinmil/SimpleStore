@@ -27,8 +27,9 @@ int main(){
     free(array[i]);
   }
 */
+  float basket = 0;
   while(1){
-    float num, basket;
+    float num;
     char usrInput[20];
     char checkExit[20];
     node *n = malloc(sizeof(node));
@@ -51,9 +52,14 @@ int main(){
 
       fprintf(stderr, "Enter number in stock: ");
       fgets(usrInput, 20, stdin);
-      sscanf(usrInput, "%f", &num);
-      n->stock = num;
-      
+      n->stock = atof(usrInput);
+      while(n->stock == 0){
+        fprintf(stderr, "Invalid Input\n");
+        fprintf(stderr, "Enter number in stock: ");
+        fgets(usrInput, 20, stdin);
+        n->stock = atof(usrInput);      
+      }
+
       fprintf(stderr, "Enter unit type: ");
       fgets(usrInput, 20, stdin);
       sscanf(usrInput, "%s", usrInput);
@@ -63,14 +69,21 @@ int main(){
       fgets(usrInput, 20, stdin);
       sscanf(usrInput, "%f", &num);
       n->price = num;
-      
+      while(n->price == 0){
+        fprintf(stderr, "Invalid Input\n");
+        fprintf(stderr, "Enter product price: ");
+        fgets(usrInput, 20, stdin);
+        sscanf(usrInput, "%f", &num);
+        n->price = num;
+      }
+
       fprintf(stderr, "Enter price per unit: ");
       fgets(usrInput, 20, stdin);
       sscanf(usrInput, "%s", usrInput);
       strcpy(n->pricePerUnit, usrInput);
       fprintf(stderr, "\n");
       
-     addToTree(root, root, n);
+      addToTree(root, root, n);
     }
     else if(num == 2){
       fprintf(stderr, "Enter product name: ");
@@ -82,8 +95,18 @@ int main(){
       fprintf(stderr, "Enter quantity: ");
       fgets(usrInput, 20, stdin);
       sscanf(usrInput, "%f", &num);
+      fprintf(stderr, "n - product name: %s\n", n-> productName);
       
-      //makePurchase(root, n, num);
+      num = makePurchase(root, root, n, num);
+      
+      if(num == -1){
+        fprintf(stderr, "Unable to complete purchase\n\n");
+      }
+      else{
+        fprintf(stderr, "Added to basket %.2f\n", num);
+        basket += num;
+        fprintf(stderr, "Total cost of basket: %.2f\n", basket);
+      }
 
     }
     else if(num == 3){

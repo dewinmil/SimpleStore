@@ -131,16 +131,19 @@ void loadData(node *root){
         strcpy(n->productName, token);
         break;
       case 1:
-        n->stock = (float)atoi(token);
+        n->stock = atof(token);
+        //n->stock = (float)atoi(token);
         break;
       case 2:
         strcpy(n->unit, token);
         break;
       case 3:
-        n->price = (float)atoi(token);
+        n->price = atof(token);
+        //n->price = (float)atoi(token);
         break;
       case 4:
         strcpy(n->pricePerUnit, token);
+        displayNode(n);
         addToTree(root, root, n);
         break;
     }
@@ -216,11 +219,45 @@ int findLevelOrder(node* *array[100], node *root, node *parent, int row, int col
       findLevelOrder(array, root, array[column-1][prevDepth-remaining], row, column, remaining, prevDepth);
     }
   }
+}
 
-//float makePurchase(node *root, node *n, int num){
+float makePurchase(node *root, node *parent, node *n, float num){
 
-//}
-  
+  //root is empty / not created so can't make purchase
+  if(strlen(root->productName) == 0){
+    return -1;
+  }
+  else{ 
+    //product on left branch of node
+    if(strcmp(n->productName, parent->productName) < 0){
+      if(parent->childLeft){
+        makePurchase(root, parent->childLeft, n, num);
+      }
+      else{
+        return -1; //couldn't find product
+
+      }
+    }
+    //product on right branch of node
+    else if(strcmp(n->productName, parent->productName) > 0){
+      if(parent->childRight){
+        makePurchase(root, parent->childRight, n, num);
+      }
+      else{
+        return -1; //couldn't find product
+      }
+    }
+    else{//must be on correct product
+      if(parent->stock >= num){
+        parent->stock -= num;
+        num *= parent->price;
+        return num;
+      }
+      else{
+        return -1;
+      }
+    }
+  }
 }
 
 
