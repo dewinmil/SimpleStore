@@ -180,26 +180,42 @@ float removeFromTree(node *root, node *parent, node *n){
   else{//must be on correct product
     if(parent->parent == nptr){//must be root
       if(parent->childLeft){
-        parent->childLeft->parent = nptr;
-        if(parent->childRight){
-          parent->childRight->parent = nptr;
-          addToTree(parent->childLeft,  parent->childLeft, parent->childRight);
+        displayNode(parent->childLeft);
+        strcpy(parent->productName, parent->childLeft->productName);
+        parent->stock = parent->childLeft->stock;
+        strcpy(parent->unit, parent->childLeft->unit);
+        parent->price = parent->childLeft->price;
+        strcpy(parent->pricePerUnit, parent->childLeft->pricePerUnit);
+
+        node * tmp = parent->childLeft;
+        parent->childLeft = parent->childLeft->childLeft;
+        if(tmp->childRight){
+          addToTree(parent, parent, tmp->childRight);
         }
+        cleanNode(tmp);
+        free(tmp);
+      }else if(parent->childRight){
+        strcpy(parent->productName, parent->childRight->productName);
+        parent->stock = parent->childRight->stock;
+        strcpy(parent->unit, parent->childRight->unit);
+        parent->price = parent->childRight->price;
+        strcpy(parent->pricePerUnit, parent->childRight->pricePerUnit);
+        
+        node * tmp = parent->childRight;
+        parent->childLeft = parent->childRight->childLeft;
+        parent->childRight = parent->childRight->childRight; 
+        cleanNode(tmp);
+        free(tmp);
+      }else{
+        cleanNode(parent);
       }
-      else if(parent->childRight){
-        parent->childRight->parent = nptr;
-      }
-      cleanNode(parent);
-      free(parent);
       return 1;
     }
     else{
       if(parent->parent->childLeft == parent){
-      fprintf(stderr, "hope it is this one left\n");  
         parent->parent->childLeft = nptr;
       }
       if(parent->parent->childRight == parent){
-      fprintf(stderr, "hope it is this one right\n");  
         parent->parent->childRight = nptr;
 
       }
@@ -213,7 +229,6 @@ float removeFromTree(node *root, node *parent, node *n){
       }
       cleanNode(parent);
       free(parent);
-      fprintf(stderr, "hope it is this one");  
       return 1;
     }
   }
@@ -221,8 +236,23 @@ float removeFromTree(node *root, node *parent, node *n){
 }
 
 
-int findLevelOrder(node* *array[100], node *root, node *parent, int row, int column, int remaining, int prevDepth){
+void findLevelOrder(node* *array[100], node *root, node *parent, int row, int column, int remaining, int prevDepth){
  
+  //free & malloc array
+  if(row == 0 && column == 0){
+    int i;
+    for(i = 0; i < 100; i++){
+      free(array[i]);
+    }
+   
+    for(i = 0; i < 100; i++){
+      if(i == 0){
+        array[i] = malloc(1 * sizeof(node*));
+      }
+      array[i] = malloc(2 * i * sizeof(node*));
+    }
+
+  } 
 
   displayNode(parent);
   if(parent->childLeft){
@@ -239,7 +269,7 @@ int findLevelOrder(node* *array[100], node *root, node *parent, int row, int col
   }
   else{
     if(row == 0){
-      return 1;
+      //done - do nothing
     }
     else{
       column++;

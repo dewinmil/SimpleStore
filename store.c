@@ -174,6 +174,8 @@ int main(){
       }
       else if(num == 8){
         fprintf(stderr, "Thank you for shopping at Miles grocery store!\n");
+
+        
         break;
       }
     }
